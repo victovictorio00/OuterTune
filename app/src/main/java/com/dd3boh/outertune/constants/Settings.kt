@@ -87,6 +87,10 @@ enum class AudioQuality {
     AUTO, HIGH, LOW
 }
 
+enum class QobuzAudioQuality {
+    MP3_320, FLAC_44_1_16, FLAC_96_24, FLAC_192_24
+}
+
 /*
 ---------------------------
 Library & Content

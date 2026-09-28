@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.LibraryBooks
+import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.material.icons.rounded.Palette
@@ -105,6 +106,12 @@ fun SettingsScreen(
                 title = { Text(stringResource(R.string.player_and_audio)) },
                 icon = { Icon(Icons.Rounded.PlayArrow, null) },
                 onClick = { navController.navigate("settings/player") }
+            )
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.qobuz_settings_title)) },
+                description = stringResource(R.string.qobuz_settings_description),
+                icon = { Icon(Icons.Rounded.Cloud, null) },
+                onClick = { navController.navigate("settings/qobuz") }
             )
         }
         Spacer(modifier = Modifier.height(16.dp))

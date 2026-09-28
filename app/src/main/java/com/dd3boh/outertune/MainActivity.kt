@@ -161,6 +161,8 @@ import com.dd3boh.outertune.ui.screens.settings.LibrarySettings
 import com.dd3boh.outertune.ui.screens.settings.LocalPlayerSettings
 import com.dd3boh.outertune.ui.screens.settings.LyricsSettings
 import com.dd3boh.outertune.ui.screens.settings.PlayerSettings
+import com.dd3boh.outertune.ui.screens.settings.QobuzSettings
+import com.dd3boh.outertune.ui.screens.search.QobuzAlbumScreen
 import com.dd3boh.outertune.ui.screens.settings.SettingsScreen
 import com.dd3boh.outertune.ui.screens.settings.StorageSettings
 import com.dd3boh.outertune.ui.theme.OuterTuneTheme
@@ -595,6 +597,18 @@ class MainActivity : ComponentActivity() {
                                     }
                                     composable("settings/player") {
                                         PlayerSettings(navController, scrollBehavior)
+                                    }
+                                    composable("settings/qobuz") {
+                                        QobuzSettings(navController, scrollBehavior)
+                                    }
+                                    composable(
+                                        route = "qobuz_album/{albumId}",
+                                        arguments = listOf(
+                                            navArgument("albumId") { type = NavType.StringType },
+                                        )
+                                    ) {
+                                        val albumId = it.arguments?.getString("albumId").orEmpty()
+                                        QobuzAlbumScreen(albumId = albumId, navController = navController)
                                     }
                                     composable("settings/storage") {
                                         StorageSettings(navController, scrollBehavior)

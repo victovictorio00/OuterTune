@@ -183,6 +183,12 @@ fun SearchBarContainer(
                 navController = navController,
                 onDismiss = { onSearchActiveChange(false) },
             )
+            if (query.text.length >= 3) {
+                QobuzSearchSection(
+                    query = query.text,
+                    navController = navController,
+                )
+            }
         }
     }
 }

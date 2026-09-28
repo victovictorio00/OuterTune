@@ -64,6 +64,17 @@ val AudioQualityKey = stringPreferencesKey("audioQuality")
 val AudioOffloadKey = booleanPreferencesKey("enableOffload")
 val AudioGaplessOffloadKey = booleanPreferencesKey("enableGaplessOffload")
 
+/**
+ * Qobuz provider (revive online). Ver docs/revive-qobuz/.
+ */
+val QobuzAppIdKey = stringPreferencesKey("qobuzAppId")
+val QobuzAppSecretKey = stringPreferencesKey("qobuzAppSecret")
+val QobuzAuthTokenKey = stringPreferencesKey("qobuzAuthToken")
+val QobuzEmailKey = stringPreferencesKey("qobuzEmail")
+val QobuzQualityKey = stringPreferencesKey("qobuzQuality")
+val QobuzEnabledKey = booleanPreferencesKey("qobuzEnabled")
+val ProviderKillSwitchKey = stringPreferencesKey("providerKillSwitch") // csv "deezer,qobuz"
+
 val MaxQueuesKey = intPreferencesKey("maxQueues")
 val PersistentQueueKey = booleanPreferencesKey("persistentQueue")
 

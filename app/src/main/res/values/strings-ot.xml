@@ -300,6 +300,8 @@ while also allowing users to translate our app as well. New, specific strings to
 
 <!-- Experimental settings -->
     <string name="experimental_settings_title">Experimental</string>
+    <string name="qobuz_settings_title">Qobuz</string>
+    <string name="qobuz_settings_description">Online source: search, metadata, covers, streaming and offline</string>
     <string name="dev_settings_title">Enable developer settings</string>
     <string name="dev_settings_description">Reveals additional advanced settings intended for development use</string>
 

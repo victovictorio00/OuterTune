@@ -35,6 +35,21 @@ class App : Application(), SingletonImageLoader.Factory {
         }
 
         instance = this
+
+        // FASE 1+5: registra proveedores (Qobuz primero, Deezer stub) + kill-switch.
+        runCatching {
+            val creds = com.dd3boh.outertune.provider.qobuz.QobuzCredentialStore(this)
+            com.dd3boh.outertune.provider.ProviderRegistry.register(
+                com.dd3boh.outertune.provider.qobuz.QobuzProvider(creds)
+            )
+            com.dd3boh.outertune.provider.ProviderRegistry.register(
+                com.dd3boh.outertune.provider.deezer.DeezerProvider()
+            )
+            val killed = com.dd3boh.outertune.utils.dataStore.get(
+                com.dd3boh.outertune.constants.ProviderKillSwitchKey, ""
+            ).split(",").map { it.trim() }.filter { it.isNotEmpty() }
+            killed.forEach { com.dd3boh.outertune.provider.ProviderRegistry.setDisabled(it, true) }
+        }
     }
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {

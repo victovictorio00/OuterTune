@@ -570,6 +570,8 @@ class MusicService : MediaLibraryService(),
 
     private fun createDataSourceFactory(): DataSource.Factory {
         val songUrlCache = HashMap<String, Pair<String, Long>>()
+        // TTL de URLs firmadas Qobuz (no persistir, solo memoria)
+        val urlTtlMs = 5 * 60 * 1000L
         return ResolvingDataSource.Factory(createCacheDataSource()) { dataSpec ->
             val mediaId = dataSpec.key ?: error("No media id")
             Log.d(TAG, "PLAYING: song id = $mediaId")
@@ -607,6 +609,30 @@ class MusicService : MediaLibraryService(),
             if (isDownload || isCache) {
                 Log.d(TAG, "PLAYING: remote song (cache = ${isCache}, download = ${isDownload})")
                 return@Factory dataSpec
+            }
+
+            // FASE 2: resolver stream remoto vía ProviderChain (Qobuz primero, failover invisible).
+            // Solo ids de proveedor (qb:, dz:). Local ya retornó arriba.
+            if (mediaId.startsWith("qb:") || mediaId.startsWith("dz:")) {
+                val now = System.currentTimeMillis()
+                songUrlCache[mediaId]?.let { (cachedUrl, ts) ->
+                    if (now - ts < urlTtlMs) {
+                        Log.d(TAG, "PLAYING: provider cached url")
+                        return@Factory dataSpec.withUri(cachedUrl.toUri())
+                    }
+                }
+                try {
+                    val resolved = runBlocking {
+                        com.dd3boh.outertune.provider.ProviderRegistry.chain()
+                            .resolveStreamSilent(mediaId)
+                    }
+                    songUrlCache[mediaId] = resolved.url to now
+                    Log.d(TAG, "PLAYING: provider resolved (${resolved.mimeHint})")
+                    return@Factory dataSpec.withUri(resolved.url.toUri())
+                } catch (e: Exception) {
+                    Log.w(TAG, "PLAYING: provider resolve failed: ${e.message}")
+                    // cae al error genérico de abajo; la UI muestra "No disponible"
+                }
             }
 
             throw PlaybackException(

@@ -109,6 +109,39 @@ class DownloadUtil @Inject constructor(
         downloadSong(song.id, song.title)
     }
 
+    /**
+     * FASE 4: descarga offline permanente desde proveedor (Qobuz).
+     * Resuelve streamUrl firmado -> DownloadManagerOt (fichero .mka en carpeta usuario)
+     * -> registra en Room como descargado. Fallos silenciosos salvo toast genérico.
+     */
+    fun downloadProviderTrack(id: String, title: String) {
+        if (downloads.value[id] != null) return
+        if (!id.startsWith("qb:") && !id.startsWith("dz:")) {
+            downloadSong(id, title) // legacy Exo cache path
+            return
+        }
+        downloads.update { it + (id to STATE_DOWNLOADING) }
+        CoroutineScope(dlCoroutine).launch {
+            try {
+                val resolved = com.dd3boh.outertune.provider.ProviderRegistry.chain()
+                    .resolveStreamSilent(id)
+                downloadMgr.enqueue(mediaId = id, url = resolved.url, displayName = title)
+                // Espera el evento Success/Failure para marcar DB (timeout 10 min implícito por flujo)
+                // El registro final lo hace scanDownloads/rescan; marcamos optimista:
+                withContext(Dispatchers.IO) {
+                    database.updateDownloadStatus(id, LocalDateTime.now())
+                }
+                downloads.update { it + (id to LocalDateTime.now()) }
+            } catch (e: Exception) {
+                reportException(e)
+                downloads.update { it.toMutableMap().apply { remove(id) } }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "No disponible", LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     private fun downloadSong(id: String, title: String) {
         if (downloads.value[id] != null) return
         val downloadRequest = DownloadRequest.Builder(id, id.toUri())
