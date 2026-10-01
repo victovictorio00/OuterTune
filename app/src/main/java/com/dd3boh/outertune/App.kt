@@ -19,6 +19,8 @@ import coil3.request.allowHardware
 import coil3.request.crossfade
 import com.dd3boh.outertune.utils.CoilBitmapLoader
 import com.dd3boh.outertune.utils.LocalArtworkPathKeyer
+import com.dd3boh.outertune.utils.dataStore
+import com.dd3boh.outertune.utils.get
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.DelicateCoroutinesApi
 
@@ -45,7 +47,7 @@ class App : Application(), SingletonImageLoader.Factory {
             com.dd3boh.outertune.provider.ProviderRegistry.register(
                 com.dd3boh.outertune.provider.deezer.DeezerProvider()
             )
-            val killed = com.dd3boh.outertune.utils.dataStore.get(
+            val killed = dataStore.get(
                 com.dd3boh.outertune.constants.ProviderKillSwitchKey, ""
             ).split(",").map { it.trim() }.filter { it.isNotEmpty() }
             killed.forEach { com.dd3boh.outertune.provider.ProviderRegistry.setDisabled(it, true) }
