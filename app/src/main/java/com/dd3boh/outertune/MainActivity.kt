@@ -161,7 +161,17 @@ import com.dd3boh.outertune.ui.screens.settings.LibrarySettings
 import com.dd3boh.outertune.ui.screens.settings.LocalPlayerSettings
 import com.dd3boh.outertune.ui.screens.settings.LyricsSettings
 import com.dd3boh.outertune.ui.screens.settings.PlayerSettings
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
+import androidx.datastore.preferences.core.edit
+import com.dd3boh.outertune.constants.VpsUpdateNotifiedKey
+import com.dd3boh.outertune.provider.vps.VpsUpdate
 import com.dd3boh.outertune.ui.screens.settings.QobuzSettings
+import com.dd3boh.outertune.ui.screens.settings.VpsSettings
+import com.dd3boh.outertune.utils.dataStore
+import com.dd3boh.outertune.utils.get
 import com.dd3boh.outertune.ui.screens.search.QobuzAlbumScreen
 import com.dd3boh.outertune.ui.screens.settings.SettingsScreen
 import com.dd3boh.outertune.ui.screens.settings.StorageSettings
@@ -275,6 +285,31 @@ class MainActivity : ComponentActivity() {
                         this@MainActivity, database, downloadUtil, coroutineScope, playerConnection,
                         snackbarHostState
                     )
+                }
+                // TubeOther: aviso de APK nueva (una vez por versión)
+                coroutineScope.launch {
+                    try {
+                        val upd = VpsUpdate.check(this@MainActivity, BuildConfig.VERSION_CODE)
+                        if (upd != null) {
+                            val (ver, url) = upd
+                            val notified = this@MainActivity.dataStore.get(VpsUpdateNotifiedKey, "")
+                            if (notified != ver) {
+                                val res = snackbarHostState.showSnackbar(
+                                    message = "Nueva versión $ver de TubeOther disponible",
+                                    actionLabel = "Descargar",
+                                    duration = SnackbarDuration.Long,
+                                )
+                                if (res == SnackbarResult.ActionPerformed) {
+                                    this@MainActivity.startActivity(
+                                        Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                                } else {
+                                    this@MainActivity.dataStore.edit {
+                                        it[VpsUpdateNotifiedKey] = ver
+                                    }
+                                }
+                            }
+                        }
+                    } catch (_: Exception) { }
                 }
             }
 
@@ -600,6 +635,9 @@ class MainActivity : ComponentActivity() {
                                     }
                                     composable("settings/qobuz") {
                                         QobuzSettings(navController, scrollBehavior)
+                                    }
+                                    composable("settings/vps") {
+                                        VpsSettings(navController, scrollBehavior)
                                     }
                                     composable(
                                         route = "qobuz_album/{albumId}",

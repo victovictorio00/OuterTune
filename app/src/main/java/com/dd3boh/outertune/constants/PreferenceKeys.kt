@@ -75,6 +75,14 @@ val QobuzQualityKey = stringPreferencesKey("qobuzQuality")
 val QobuzEnabledKey = booleanPreferencesKey("qobuzEnabled")
 val ProviderKillSwitchKey = stringPreferencesKey("providerKillSwitch") // csv "deezer,qobuz"
 
+/**
+ * TubeOther provider (servidor propio). URL/token incluidos; override opcional.
+ */
+val VpsBaseUrlKey = stringPreferencesKey("vpsBaseUrl")
+val VpsTokenKey = stringPreferencesKey("vpsToken")
+val VpsEnabledKey = booleanPreferencesKey("vpsEnabled")
+val VpsUpdateNotifiedKey = stringPreferencesKey("vpsUpdateNotified")
+
 val MaxQueuesKey = intPreferencesKey("maxQueues")
 val PersistentQueueKey = booleanPreferencesKey("persistentQueue")
 

@@ -47,6 +47,12 @@ class App : Application(), SingletonImageLoader.Factory {
             com.dd3boh.outertune.provider.ProviderRegistry.register(
                 com.dd3boh.outertune.provider.deezer.DeezerProvider()
             )
+            val vpsStore = com.dd3boh.outertune.provider.vps.VpsCredentialStore(this)
+            if (vpsStore.enabled()) {
+                com.dd3boh.outertune.provider.ProviderRegistry.register(
+                    com.dd3boh.outertune.provider.vps.VpsProvider(vpsStore)
+                )
+            }
             val killed = dataStore.get(
                 com.dd3boh.outertune.constants.ProviderKillSwitchKey, ""
             ).split(",").map { it.trim() }.filter { it.isNotEmpty() }

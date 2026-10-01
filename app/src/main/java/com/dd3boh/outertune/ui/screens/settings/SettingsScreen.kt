@@ -113,6 +113,12 @@ fun SettingsScreen(
                 icon = { Icon(Icons.Rounded.Cloud, null) },
                 onClick = { navController.navigate("settings/qobuz") }
             )
+            PreferenceEntry(
+                title = { Text("TubeOther") },
+                description = "Servidor propio de música + updates",
+                icon = { Icon(Icons.Rounded.Cloud, null) },
+                onClick = { navController.navigate("settings/vps") }
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
 
