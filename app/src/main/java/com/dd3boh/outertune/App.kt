@@ -38,15 +38,8 @@ class App : Application(), SingletonImageLoader.Factory {
 
         instance = this
 
-        // FASE 1+5: registra proveedores (Qobuz primero, Deezer stub) + kill-switch.
+        // Solo TubeOther/VPS: fuente única, ya configurada. Sin Qobuz/Deezer.
         runCatching {
-            val creds = com.dd3boh.outertune.provider.qobuz.QobuzCredentialStore(this)
-            com.dd3boh.outertune.provider.ProviderRegistry.register(
-                com.dd3boh.outertune.provider.qobuz.QobuzProvider(creds)
-            )
-            com.dd3boh.outertune.provider.ProviderRegistry.register(
-                com.dd3boh.outertune.provider.deezer.DeezerProvider()
-            )
             val vpsStore = com.dd3boh.outertune.provider.vps.VpsCredentialStore(this)
             if (vpsStore.enabled()) {
                 com.dd3boh.outertune.provider.ProviderRegistry.register(

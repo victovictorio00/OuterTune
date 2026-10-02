@@ -611,9 +611,9 @@ class MusicService : MediaLibraryService(),
                 return@Factory dataSpec
             }
 
-            // FASE 2: resolver stream remoto vía ProviderChain (Qobuz primero, failover invisible).
-            // Solo ids de proveedor (qb:, dz:). Local ya retornó arriba.
-            if (mediaId.startsWith("qb:") || mediaId.startsWith("dz:")) {
+            // Resolver stream remoto vía ProviderChain (TubeOther/VPS + otros).
+            // Solo ids de proveedor (vps:, qb:, dz:). Local ya retornó arriba.
+            if (mediaId.startsWith("vps:") || mediaId.startsWith("qb:") || mediaId.startsWith("dz:")) {
                 val now = System.currentTimeMillis()
                 songUrlCache[mediaId]?.let { (cachedUrl, ts) ->
                     if (now - ts < urlTtlMs) {

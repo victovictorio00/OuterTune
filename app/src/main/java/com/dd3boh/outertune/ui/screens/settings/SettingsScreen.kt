@@ -108,12 +108,6 @@ fun SettingsScreen(
                 onClick = { navController.navigate("settings/player") }
             )
             PreferenceEntry(
-                title = { Text(stringResource(R.string.qobuz_settings_title)) },
-                description = stringResource(R.string.qobuz_settings_description),
-                icon = { Icon(Icons.Rounded.Cloud, null) },
-                onClick = { navController.navigate("settings/qobuz") }
-            )
-            PreferenceEntry(
                 title = { Text("TubeOther") },
                 description = "Servidor propio de música + updates",
                 icon = { Icon(Icons.Rounded.Cloud, null) },
